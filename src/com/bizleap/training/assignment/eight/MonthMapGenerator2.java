@@ -1,0 +1,134 @@
+package com.bizleap.training.assignment.eight;
+
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
+public class MonthMapGenerator2 {
+    private Map<Integer, Object> monthMap = new HashMap<Integer, Object>();
+
+    private boolean isValid(int year) {
+        return year >= 0;
+    }
+
+    private boolean isValid(int fromYear, int toYear) {
+        return !(fromYear <= 0 || toYear <= 0 || fromYear > toYear);
+    }
+
+    public boolean isLeapYear(int year) {
+        return year % 400 == 0;
+    }
+
+    private List<Month> createMonthsForYear(int fromYear) {
+        List<Month> monthList = new ArrayList<Month>();
+
+        monthList.add(new Month(31, "January", fromYear));
+
+        if (isLeapYear(fromYear))
+            monthList.add(new Month(29, "February", fromYear));
+        else
+            monthList.add(new Month(28, "February", fromYear));
+
+        monthList.add(new Month(31, "March", fromYear));
+        monthList.add(new Month(30, "April", fromYear));
+        monthList.add(new Month(31, "May", fromYear));
+        monthList.add(new Month(30, "June", fromYear));
+        monthList.add(new Month(31, "July", fromYear));
+        monthList.add(new Month(31, "August", fromYear));
+        monthList.add(new Month(30, "September", fromYear));
+        monthList.add(new Month(31, "October", fromYear));
+        monthList.add(new Month(30, "November", fromYear));
+        monthList.add(new Month(31, "December", fromYear));
+
+        return monthList;
+    }
+
+    public Map<Integer, Object> createMonthMap(int fromYear, int toYear) {
+        if (isValid(fromYear, toYear)) {
+            for (int year = fromYear; year <= toYear; year++) {
+                createMonthMap(year);
+            }
+        } else {
+            monthMap.put(fromYear, "Range or years are invalid");
+            monthMap.put(toYear, "Range or years are invalid");
+        }
+        return monthMap;
+    }
+
+    public Map<Integer, Object> createMonthMap(int year) {
+        if (isValid(year)) {
+            for (Month month : createMonthsForYear(year)) {
+                addMonthToMap(month);
+            }
+        } else {
+            monthMap.put(year, "Year is invalid");
+        }
+        return monthMap;
+    }
+
+    private List<Month> createMonthsForYearRange(int fromYear, int toYear) {
+        List<Month> monthList = new ArrayList<Month>();
+        for (int year = fromYear; year <= toYear; year++) {
+            monthList.addAll(createMonthsForYear(year));
+        }
+        return monthList;
+    }
+
+    public Map<Integer, Object> createMonthMapRange(int fromYear, int toYear) {
+        if (isValid(fromYear, toYear)) {
+            for (Month month : createMonthsForYearRange(fromYear, toYear)) {
+                addMonthToMap(month);
+            }
+        } else {
+            monthMap.put(fromYear, "Range or years are invalid");
+            monthMap.put(toYear, "Range or years are invalid");
+        }
+        return monthMap;
+    }
+
+    private void addMonthToMap(Month month) {
+        List<Month> monthList = (List<Month>) monthMap.get(month.numberOfDays);
+        if (monthList != null)
+            monthList.add(month);
+        else {
+            monthList = new ArrayList<Month>();
+            monthList.add(month);
+            monthMap.put(month.numberOfDays, monthList);
+        }
+    }
+
+    public void prettyPrint() {
+        // print monthMap here in the prettiest form.
+
+        for (Map.Entry<Integer, Object> entry : monthMap.entrySet()) {
+            System.out.print(entry.getKey() + " Days  :");
+            System.out.println(entry.getValue());
+        }
+
+        /*
+         * Set set = monthMap.entrySet(); Iterator iterator = set.iterator(); while
+         * (iterator.hasNext()) { Map.Entry<Integer, Object> entry = (Map.Entry<Integer,
+         * Object>) iterator.next(); System.out.println(entry.getKey() + "=" +
+         * entry.getValue());
+         */
+
+    }
+
+    public static void main(String[] args) {
+        /*
+         * System.out.println("MonthMap for Year 2000 to 2002"); System.out.println(new
+         * MonthMapGenerator2().createMonthMapRange(2002,2005));
+         * System.out.println("MonthMap for Year 2000 to 2002"); System.out.println(new
+         * MonthMapGenerator2().createMonthMap(2002,2005));
+         * //System.out.println("Test Error : "); //System.out.println(new
+         * MonthGenerator2().createMonthMap(-2000,0000));
+         */
+        MonthMapGenerator2 monthMapGenerator = new MonthMapGenerator2();
+        monthMapGenerator.createMonthMap(2002, 2003);
+        monthMapGenerator.prettyPrint();
+
+
+    }
+}
